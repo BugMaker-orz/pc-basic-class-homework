@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\title{Tool Report}
+\author{丁同学—2023001234}
+\maketitle
+\section{Result}
+
+本报告展示了系统开发工具基础课程第一次实验的核心结果。
+在 Shell 脚本实验中，我们使用 awk 与 sort 管道完成了日志统计，
+其平均延迟计算公式如式~\eqref{eq:avg} 所示。
+
+\begin{equation}
+\bar{L} = \frac{1}{N} \sum_{i=1}^{N} L_i
+\label{eq:avg}
+\end{equation}
+
+其中 $N$ 为数据行数，$L_i$ 为第 $i$ 行的延迟（毫秒）。
+根据式~\eqref{eq:avg} 计算得到的平均延迟为 193.75 ms。
+
+在文件操作实验中，我们对复制后的文件设置了不同的权限，
+目录与文件的权限配置如表~\ref{tab:perm} 所示。
+
+\begin{table}[h]
+\centering
+\caption{目录与文件权限配置}
+\label{tab:perm}
+\begin{tabular}{|c|c|}
+\hline
+类型 & 权限 \\
+\hline
+目录 & 750 \\
+\hline
+普通文件 & 640 \\
+\hline
+\end{tabular}
+\end{table}
+
+如表~\ref{tab:perm} 所示，目录权限设为 750（属主可读写执行，
+属组可读执行，其他用户无权限），普通文件权限设为 640
+（属主可读写，属组可读，其他用户无权限）。
+
+在 Git 实验中，我们主动制造并解决了一次合并冲突，
+最终保留了 \texttt{mode=safe} 配置并添加了 \texttt{note=reviewed} 标记。
+
+\end{document}
