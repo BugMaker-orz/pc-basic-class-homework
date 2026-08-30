@@ -436,25 +436,25 @@ mode=fast       # 被合并分支（feature-b）的内容
 \section{解题感悟}
 % ============================================================
 
-通过本次实验，我对系统开发工具有了更深入的理解，主要收获如下：
+这次实验做下来，有几个地方印象比较深。
 
-\subsection{Shell 编程的健壮性思维}
+\subsection{Shell 里引号和空格的坑}
 
-第1题中含空格文件名的处理让我深刻认识到 Shell 脚本中"引用"的重要性。在 Shell 中，未加引号的变量会经历单词拆分（word splitting）和通配符展开（globbing），这在处理含空格或特殊字符的文件名时会导致难以调试的错误。使用 \texttt{find -print0 | while IFS= read -r -d ''} 模式是处理任意文件名的"黄金法则"。
+第1题处理含空格的文件名时踩了坑。最开始直接用 \texttt{for f in \$(find . -name "*.txt")} 遍历，结果 \texttt{notes one.txt} 被拆成了两个词。后来查了才知道，Shell 里不加引号的变量会做单词拆分和通配符展开，遇到空格就出问题。最后用 \texttt{find -print0 | while IFS= read -r -d ''} 这种写法才搞定，虽然写起来麻烦点，但什么文件名都能处理。
 
-第2题的日志统计让我体会到 Shell 管道的强大：将简单工具（awk、sort、head）通过管道组合，可以完成复杂的数据处理任务。同时，\texttt{set -euo pipefail} 和正确的 stderr/退出码处理是编写"可用于生产"脚本的基本素养。
+第2题写脚本的时候加了 \texttt{set -euo pipefail}，一开始觉得多余，后来故意传了个不存在的文件测试，发现脚本确实能正确报错并返回非零退出码。管道加 \texttt{pipefail} 也挺有用的，不然管道中间某个命令失败了根本发现不了。
 
-\subsection{Git 分支与冲突的本质}
+\subsection{Git 冲突其实没那么可怕}
 
-第3题主动制造合并冲突的过程非常有价值。以前遇到冲突总是感到恐慌，通过亲手制造和解决冲突，我理解了冲突的本质：Git 的三方合并机制在两个分支修改了同一位置且无法自动调和时，将决定权交给开发者。冲突标记（\texttt{<<<<<<<}、\texttt{=======}、\texttt{>>>>>>>}）不是错误，而是 Git 提供的"决策辅助界面"。
+第3题要求主动制造一次合并冲突，以前碰到冲突都是直接搜解决办法，没仔细想过为什么会冲突。这次自己建两个分支改同一行，再合并，看到 \texttt{<<<<<<<} 标记的时候反而觉得清楚了——就是两个分支改了同一个地方，Git 不知道该留哪个，让你自己选。把标记删掉、留下想要的内容、add、commit，就完事了。以后再碰到冲突应该不会慌了。
 
-\subsection{LaTeX 的编译机制与交叉引用}
+\subsection{LaTeX 为什么要编译两遍}
 
-第4题让我理解了 LaTeX"多次编译"的设计哲学。与所见即所得的文字处理器不同，LaTeX 的交叉引用、目录、参考文献都依赖辅助文件（.aux、.toc、.bbl），需要多次编译才能正确解析。这种"编译-链接"模式与 C/C++ 的构建过程异曲同工，体现了工具链设计的一致性。
+第4题最开始只编译了一遍，结果公式和表格的引用都显示"??"。查了一下才明白，LaTeX 的交叉引用靠 .aux 文件传递信息，第一遍编译把 label 写进去，第二遍才能读出来引用。这个做法跟 C 语言编译链接有点像，不是一步到位的。以后写 LaTeX 文档就知道至少编译两遍了。
 
-\subsection{工具链思维的建立}
+\subsection{几个工具串起来用}
 
-整个实验最核心的收获是"工具链思维"：从 Shell 命令行到 Git 版本控制，再到 LaTeX 文档构建，这些工具不是孤立的，而是构成了一个完整的开发工作流。掌握这些工具的目的不是记住命令，而是理解它们如何协同工作，让开发过程从"能运行"走向"可复现、可协作、可持续"。
+这次实验从 Shell 写脚本，到 Git 管版本，再到 LaTeX 写报告，一套流程走下来，感觉这些工具确实是配套的。Shell 干活、Git 记录改动、LaTeX 出文档，少了哪个都不太方便。以前写代码不太注意版本管理，这次按要求分次提交，回头看 commit 历史确实能清楚看到每一步做了什么，比一次性全提交强多了。
 
 % ============================================================
 \section{Git 提交记录}
@@ -470,16 +470,21 @@ mode=fast       # 被合并分支（feature-b）的内容
 \toprule
 提交哈希 & 提交信息 & 说明 \\
 \midrule
-797c159 & Initial commit & 仓库初始化，.gitignore 和截图生成器 \\
-fb16985 & Add q01: shell file operations... & 第1题代码与结果 \\
-20df099 & Add q02: access log analysis... & 第2题代码与结果 \\
-9d905a1 & Add q03: git merge conflict... & 第3题代码与结果 \\
-204963c & Add q04: latex technical report... & 第4题代码与PDF \\
-2800db9 & Add practice: missing-semester shell exercises & 课后练习9题(missing-semester) \\
-7f290cc & Add screenshots: terminal screenshots & 全部终端截图 \\
-ec06221 & Add report: complete lab1 report & 实验报告PDF与源码 \\
-4fda722 & Update report: add real git hashes & 更新真实提交哈希与git log截图 \\
-06e21dc & Fix: CJK font + student ID + practice & 修复中文乱码、更新学号、替换为missing-semester原题 \\
+6db0a3d & Initial commit: add .gitignore & 仓库初始化 \\
+715bd46 & Add q01: shell file operations... & 第1题代码与结果 \\
+c0b4198 & Add q02: access log analysis... & 第2题代码与结果 \\
+7fdd761 & Add q03: git merge conflict... & 第3题代码与结果 \\
+02f4053 & Add q04: latex technical report... & 第4题代码与PDF \\
+f2a9dc6 & Add practice: 10 shell exercises & 课后练习(初版) \\
+5d3b20f & Add screenshots: terminal screenshots & 全部终端截图 \\
+4faf440 & Add report: complete lab1 report & 实验报告PDF与源码 \\
+4a4b5dc & Update report: add real git hashes & 更新提交哈希与截图 \\
+95f597e & Fix: CJK font + student ID + practice & 修复中文乱码、更新学号、替换课后题 \\
+c173ce4 & Update report: final git log & 更新git log截图 \\
+5e88260 & docs: add README for each project & 各项目添加README \\
+bfa8e30 & docs: add root README & 仓库首页README \\
+e5730ee & docs: update report - remove college & 删学院、改Git说明 \\
+aa92730 & chore: remove screenshot generator & 删除截图生成脚本 \\
 \bottomrule
 \end{tabular}
 \end{table}
