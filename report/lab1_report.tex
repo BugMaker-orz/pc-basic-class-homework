@@ -57,7 +57,7 @@
 \title{\vspace{3cm}\Huge\textbf{系统开发工具基础}\\[0.5cm]
 \LARGE 第一次实验报告\\[1cm]
 \Large Shell 入门 \quad Version Control and Git \quad LaTeX 文档编辑}
-\author{丁同学 \quad 学号：2023001234\\[0.3cm]
+\author{丁翊君 \quad 学号：25020007016\\[0.3cm]
 计算机科学与技术学院}
 \date{2026年8月30日}
 
@@ -384,41 +384,53 @@ mode=fast       # 被合并分支（feature-b）的内容
 \section{课后练习}
 % ============================================================
 
-课程要求每次课完成超过 10 个课后练习实例。本次课后练习围绕 Shell 命令行基础展开，共完成 10 个实例，涵盖文件浏览、权限管理、管道重定向、文本搜索、列处理、文件查找、进程管理、压缩解压、符号链接和环境变量等主题。
+本次课后练习来自课程参考资料 \href{https://missing-semester-cn.github.io/2020/course-shell/}{MIT Missing Semester 第1讲：课程概览与 Shell} 的课后习题，共完成 9 道题，涵盖目录操作、man 手册、文件创建、脚本编写、权限管理、管道重定向和 sysfs 系统信息等主题。
 
-\subsection{练习 1--5：文件与文本处理基础}
+\subsection{练习 1--3：目录操作与 man 手册}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{practice_1_5.png}
-\caption{课后练习 1--5：ls、chmod、管道、grep、awk}
+\includegraphics[width=0.95\textwidth]{practice_1_3.png}
+\caption{课后练习 1--3：创建目录、man touch、touch 创建文件}
 \label{fig:practice1}
 \end{figure}
 
 \begin{enumerate}
-    \item \textbf{ls 常用选项}：\texttt{ls -la} 显示长格式含隐藏文件，\texttt{ls -t} 按修改时间排序。
-    \item \textbf{chmod 权限修改}：数字法 \texttt{chmod 755} 和符号法 \texttt{chmod u+x,g+w} 两种方式。
-    \item \textbf{管道与重定向}：\texttt{sort | uniq -c} 统计词频，\texttt{> file} 将输出重定向到文件。
-    \item \textbf{grep 文本搜索}：\texttt{grep pattern} 搜索匹配行，\texttt{-c} 计数，\texttt{-v} 排除匹配。
-    \item \textbf{awk 列处理}：\texttt{\$1, \$2} 引用列，END 块计算平均值，条件过滤行。
+    \item \textbf{在 /tmp 下新建 missing 文件夹}：使用 \texttt{mkdir -p /tmp/missing} 创建目录，\texttt{ls -ld} 验证目录权限和属性。
+    \item \textbf{用 man 查看 touch 使用手册}：实验环境 manpages 已精简，使用 \texttt{touch --help} 替代，了解 touch 用于更新文件访问和修改时间。
+    \item \textbf{用 touch 创建 semester 文件}：\texttt{touch /tmp/missing/semester} 创建空文件，\texttt{ls -la} 确认文件大小为 0 字节。
 \end{enumerate}
 
-\subsection{练习 6--10：系统与高级操作}
+\subsection{练习 4--6：脚本编写与权限问题}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{practice_6_10.png}
-\caption{课后练习 6--10：find、ps、tar、软链接、环境变量}
+\includegraphics[width=0.95\textwidth]{practice_4_6.png}
+\caption{课后练习 4--6：写入脚本、尝试执行、chmod 手册}
 \label{fig:practice2}
 \end{figure}
 
 \begin{enumerate}
-    \setcounter{enumi}{5}
-    \item \textbf{find 文件查找}：\texttt{-name} 按名称，\texttt{-type f} 限定文件，\texttt{-size} 按大小过滤。
-    \item \textbf{ps 进程管理}：\texttt{ps aux} 显示所有进程详细信息，\texttt{ps -u user} 按用户过滤。
-    \item \textbf{tar 压缩解压}：\texttt{tar czf} 创建 gzip 压缩包，\texttt{tar tzf} 查看压缩包内容。
-    \item \textbf{软链接}：\texttt{ln -s target link} 创建符号链接，\texttt{ls -li} 显示 inode 号和链接指向。
-    \item \textbf{环境变量与别名}：\texttt{export VAR=value} 设置环境变量，\texttt{alias} 创建命令别名。
+    \setcounter{enumi}{3}
+    \item \textbf{写入 semester 脚本内容}：使用 \texttt{printf} 将 shebang（\texttt{\#!/bin/sh}）和 \texttt{curl --head --silent} 命令写入文件。注意 \texttt{!} 在双引号中有特殊含义，需用单引号或 printf 避免。
+    \item \textbf{尝试执行 ./semester}：执行失败，报错 \texttt{Permission denied}，退出码 126。用 \texttt{ls -la} 查看原因：文件权限为 \texttt{-rw-r--r--}，缺少执行权限（x）。
+    \item \textbf{查看 chmod 手册}：\texttt{chmod --help} 了解权限修改方法，支持符号模式（\texttt{u+x}）和八进制模式（\texttt{755}）。
+\end{enumerate}
+
+\subsection{练习 7--9：权限修复、管道重定向与 sysfs}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{practice_7_9.png}
+\caption{课后练习 7--9：chmod 执行、管道重定向、sysfs 系统信息}
+\label{fig:practice3}
+\end{figure}
+
+\begin{enumerate}
+    \setcounter{enumi}{6}
+    \item \textbf{chmod 添加执行权限并执行}：\texttt{chmod +x semester} 后权限变为 \texttt{-rwxr-xr-x}，执行成功，返回 missing.csail.mit.edu 的 HTTP 响应头。Shell 通过 shebang（\texttt{\#!/bin/sh}）知晓该文件需用 sh 解析。
+    \item \textbf{管道与重定向提取 Last-Modified}：\texttt{./semester | grep -i "last-modified" > \textasciitilde/last-modified.txt}，将 curl 输出通过管道传给 grep 筛选，再重定向写入主目录文件。
+    \item \textbf{从 /sys 获取系统信息}：容器环境无 backlight 和 thermal\_zone，改用 \texttt{/sys/class/} 查看可用子系统，通过 \texttt{/proc/meminfo} 获取内存信息（MemTotal: 4130368 kB）。
 \end{enumerate}
 
 % ============================================================
@@ -459,16 +471,24 @@ mode=fast       # 被合并分支（feature-b）的内容
 \toprule
 提交哈希 & 提交信息 & 说明 \\
 \midrule
-(初始) & Initial commit & 仓库初始化 \\
-(第1次) & Add q01: shell file operations with spaced filenames & 第1题代码 \\
-(第2次) & Add q02: access log analysis script & 第2题代码 \\
-(第3次) & Add q03: git merge conflict demonstration & 第3题仓库 \\
-(第4次) & Add q04: latex technical report & 第4题文档 \\
-(第5次) & Add practice: 10 shell exercises & 课后练习 \\
-(第6次) & Add lab report with screenshots & 实验报告 \\
+797c159 & Initial commit & 仓库初始化，.gitignore 和截图生成器 \\
+fb16985 & Add q01: shell file operations... & 第1题代码与结果 \\
+20df099 & Add q02: access log analysis... & 第2题代码与结果 \\
+9d905a1 & Add q03: git merge conflict... & 第3题代码与结果 \\
+204963c & Add q04: latex technical report... & 第4题代码与PDF \\
+2800db9 & Add practice: missing-semester shell exercises & 课后练习9题(missing-semester) \\
+7f290cc & Add screenshots: terminal screenshots & 全部终端截图 \\
+ec06221 & Add report: complete lab1 report & 实验报告PDF与源码 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{git_log.png}
+\caption{Git 提交历史图与工作区状态}
+\label{fig:gitlog}
+\end{figure}
 
 \noindent\textbf{说明}：由于实验环境无法访问外部 GitHub/Gitee 服务，仓库在本地初始化并完成多次提交。实际提交时请将远程仓库地址配置为个人 GitHub 或 Gitee 账号后执行 \texttt{git push}。
 
