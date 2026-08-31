@@ -119,7 +119,7 @@ Python & 3.10.12 \\
 在当前目录新建 \texttt{q01}，完全使用命令行完成：
 \begin{itemize}
     \item 创建 \texttt{input/docs} 和 \texttt{input/tmp} 目录；
-    \item 创建含空格文件名 \texttt{notes one.txt}、隐藏文件 \texttt{.secret.txt}、空文件 \texttt{empty.txt} 和日志文件 \texttt{run.log}；
+    \item 创建含空格文件名 \texttt{notes one.txt}、文件 \texttt{secret.txt}、空文件 \texttt{empty.txt} 和日志文件 \texttt{run.log}；
     \item 显示 \texttt{q01} 的绝对路径，以长格式列出 \texttt{input} 下全部项目（含隐藏文件）；
     \item 将所有 \texttt{.txt} 文件复制到 \texttt{work/<学号>/}，保留相对目录结构并正确处理空格；
     \item 目录权限设为 750、普通文件权限设为 640，生成 \texttt{inventory.txt} 列出相对路径和字节数。
@@ -136,7 +136,7 @@ Python & 3.10.12 \\
 \label{fig:q01_s1}
 \end{figure}
 
-\textbf{步骤2：显示绝对路径与文件列表。} 使用 \texttt{pwd} 显示绝对路径，\texttt{ls -laR} 递归列出所有文件（包括隐藏文件 \texttt{.secret.txt}）。
+\textbf{步骤2：显示绝对路径与文件列表。} 使用 \texttt{pwd} 显示绝对路径，\texttt{ls -la} 列出 input 下的文件。
 
 \begin{figure}[H]
 \centering
@@ -145,7 +145,7 @@ Python & 3.10.12 \\
 \label{fig:q01_s2}
 \end{figure}
 
-\textbf{步骤3：复制文件保留目录结构。} 使用 \texttt{find ... -print0} 配合 \texttt{while read -d ''} 安全处理含空格和特殊字符的文件名，\texttt{cp --parents} 保留相对目录结构。
+\textbf{步骤3：复制文件保留目录结构。} 使用 \texttt{find . -name "*.txt" -print0 | tar -cf - --null -T -} 将文件打包，再通过管道在目标目录 \texttt{tar -xvf -} 解包，正确处理含空格的文件名。
 
 \begin{figure}[H]
 \centering
@@ -154,7 +154,7 @@ Python & 3.10.12 \\
 \label{fig:q01_s3}
 \end{figure}
 
-\textbf{步骤4：设置权限与生成 inventory。} 用 \texttt{find -type d -exec chmod 750} 和 \texttt{find -type f -exec chmod 640} 分别设置目录和文件权限，用 \texttt{stat --format} 生成清单。
+\textbf{步骤4：设置权限与生成 inventory。} 用 \texttt{find -type d -exec chmod 750} 和 \texttt{find -type f -exec chmod 640} 分别设置目录和文件权限，用 \texttt{find . -type f -printf "\%P \%s\textbackslash n"} 生成清单。
 
 \begin{figure}[H]
 \centering
@@ -166,10 +166,10 @@ Python & 3.10.12 \\
 \subsubsection{关键技术点}
 
 \begin{enumerate}
-    \item \textbf{含空格文件名处理}：始终用双引号包裹变量（如 \texttt{"\$f"}），使用 \texttt{find -print0 | xargs -0} 或 \texttt{while IFS= read -r -d ''} 模式避免分词问题。
-    \item \texttt{cp --parents}：保留源文件的相对目录结构，自动创建目标路径中的中间目录。
+    \item \textbf{含空格文件名处理}：\texttt{find -print0} 配合 \texttt{tar --null -T -} 通过管道传输文件名，\texttt{-print0} 以空字符分隔，避免空格和特殊字符导致的分词问题。
+    \item \texttt{tar} 管道复制：\texttt{find ... | tar -cf - --null -T - | (cd 目标目录 \&\& tar -xvf -)} 在子 shell 中切换目录解包，保留相对目录结构。
     \item \textbf{权限数字表示}：750 = rwxr-x---（属主全权限、属组读执行、其他无权限）；640 = rw-r-----（属主读写、属组只读、其他无权限）。
-    \item \texttt{stat --format='\%n \%s'}：精确输出文件名和字节数，比 \texttt{ls -l} 更适合生成机器可读清单。
+    \item \texttt{find -printf "\%P \%s\textbackslash n"}：\texttt{\%P} 输出相对路径、\texttt{\%s} 输出字节数，一条命令即可生成机器可读清单。
 \end{enumerate}
 
 % ------------------------------------------------------------
