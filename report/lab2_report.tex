@@ -1,0 +1,249 @@
+\documentclass[12pt,a4paper]{article}
+
+% ===== 自定义模板 =====
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+
+% 页面设置
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+% 章节标题格式
+\titleformat{\section}{\Large\bfseries\color{blue!60!black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{blue!50!black}}{\thesubsection}{1em}{}
+
+% 代码块设置
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    framesep=5pt,
+    breaklines=true,
+    showstringspaces=false,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red!70!black}
+}
+
+% 页眉页脚
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 系统开发工具基础}
+\fancyhead[R]{\small 第二次实验报告}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% 图片路径
+\graphicspath{{./}}
+
+% 超链接设置
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    citecolor=blue!60!black,
+    urlcolor=blue!80!black
+}
+
+\title{\vspace{3cm}\Huge\textbf{系统开发工具基础}\\[0.5cm]
+\LARGE 第二次实验报告\\[1cm]
+\Large 命令行环境 \quad 开发环境与工具}
+\author{丁翊君 \quad 学号：25020007016}
+\date{2026年8月31日}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{实验目的}
+% ============================================================
+
+本次实验是《系统开发工具基础》课程的第二次实验，授课内容包括命令行环境、开发环境与工具、Debugging and Profiling 三部分。目前已完成前两题，主题如下：
+
+\begin{enumerate}
+    \item \textbf{命令行环境：进程、信号与任务控制}：掌握 Shell 中后台任务的控制方法，理解进程信号与 \texttt{trap} 清理机制。
+    \item \textbf{开发环境与工具}：使用 IDE 语言服务器完成语义重构，借助 ruff 做静态检查，并用 pytest 验证代码正确性。
+\end{enumerate}
+
+\section{实验环境}
+
+\begin{table}[H]
+\centering
+\caption{实验环境配置}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{项目} & \textbf{配置} \\
+\hline
+操作系统 & Ubuntu 22.04.3 LTS (Linux) \\
+\hline
+Shell & GNU Bash 5.1.16 \\
+\hline
+Python & 3.14.4（.venv 虚拟环境） \\
+\hline
+pytest & 9.0.2 \\
+\hline
+ruff & 0.16.4 \\
+\hline
+IDE & PyCharm / VS Code（启用 Python 语言服务器） \\
+\hline
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{课上实验内容}
+% ============================================================
+
+% ------------------------------------------------------------
+\subsection{第5题：控制一个可清理的后台任务}
+
+\subsubsection{题目要求}
+
+将给定脚本保存为 \texttt{q05/worker.sh}，再完成任务控制。给定内容：
+
+\begin{lstlisting}[language=bash]
+#!/usr/bin/env bash
+trap 'echo CLEAN_EXIT >> cleanup.log; exit 0' TERM INT
+n=0
+while true; do
+    echo "$n"
+    n=$((n+1))
+    sleep 1
+done
+\end{lstlisting}
+
+题目要求：
+
+\begin{itemize}
+    \item 赋予脚本执行权限，在前台启动，并把 stdout、stderr 分别写入 \texttt{stdout.log}、\texttt{stderr.log}。
+    \item 使用 \texttt{Ctrl-Z} 挂起任务，再用 \texttt{bg} 让它在后台继续；使用 \texttt{jobs} 确认状态。
+    \item 使用 \texttt{jobs -p} 或等价方式取得 PID，不得手工抄写 PID；发送 \texttt{SIGTERM} 并等待任务结束。
+    \item 确认 \texttt{cleanup.log} 中出现 \texttt{CLEAN\_EXIT}，且任务已经退出；禁止使用 \texttt{kill -9}。
+\end{itemize}
+
+\subsubsection{执行过程与结果}
+
+\begin{enumerate}
+    \item 创建 \texttt{q05} 目录并编写 \texttt{worker.sh}，脚本通过 \texttt{trap} 捕获 \texttt{TERM}/\texttt{INT} 信号，收到信号时向 \texttt{cleanup.log} 写入 \texttt{CLEAN\_EXIT} 后退出；\texttt{chmod +x} 赋予执行权限。
+    \item 前台启动脚本并把输出分离重定向：\texttt{./worker.sh > stdout.log 2> stderr.log}。
+    \item 按 \texttt{Ctrl-Z} 将任务挂起（输出 \texttt{[1]+ 已停止}），再用 \texttt{bg} 放入后台继续运行。
+    \item 用 \texttt{pid=\$(jobs -p \%1)} 取得任务 PID（不手工抄写），执行 \texttt{kill -TERM \$pid}。
+    \item 查看 \texttt{cleanup.log}，出现 \texttt{CLEAN\_EXIT}，任务状态变为已完成。
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{q05_task_control.png}
+\caption{第5题：后台任务控制完整过程（挂起、后台、取 PID、发送 SIGTERM）}
+\end{figure}
+
+\subsubsection{关键技术点}
+
+\begin{enumerate}
+    \item \textbf{信号与 \texttt{trap}}：\texttt{trap '命令' TERM INT} 在收到 \texttt{SIGTERM} 或 \texttt{SIGINT} 时执行指定命令，可以完成清理动作再退出；\texttt{kill -9}（SIGKILL）无法被捕获，会直接杀死进程、跳过清理。
+    \item \textbf{任务控制}：\texttt{Ctrl-Z} 发送 \texttt{SIGTSTP} 挂起前台任务，\texttt{bg} 将其转为后台继续运行，\texttt{jobs} 查看任务列表与状态。
+    \item \textbf{获取 PID}：\texttt{jobs -p \%1} 直接输出后台任务的 PID，避免人工抄写出错。
+    \item \textbf{输出分离}：\texttt{> stdout.log 2> stderr.log} 分别重定向标准输出与标准错误，便于排查。
+\end{enumerate}
+
+% ------------------------------------------------------------
+\subsection{第6题：语义重构与本地开发反馈}
+
+\subsubsection{题目要求}
+
+在 \texttt{q06} 中按照给定代码创建三个 Python 文件，并使用编辑器语言服务器完成一次语义重构。给定内容：
+
+\begin{lstlisting}[language=Python]
+# math_utils.py
+def total_price(price: float, count: int) -> float:
+    return price * count
+
+# app.py
+from math_utils import total_price
+print(total_price(12.5, 4))
+
+# test_math_utils.py
+from math_utils import total_price
+def test_total_price():
+    assert total_price(12.5, 4) == 50.0
+\end{lstlisting}
+
+题目要求：
+
+\begin{itemize}
+    \item 在已配置好 Python、pytest 和 ruff 的课程环境中打开 \texttt{q06}，并启用 Python 语言服务器。
+    \item 分别演示跳转到定义和查找引用。
+    \item 使用“重命名符号”把 \texttt{total\_price} 改为 \texttt{calculate\_total}，保证定义和所有代码引用同步改变。
+    \item 在 \texttt{app.py} 中临时加入未使用的 \texttt{import os}，用 ruff 发现并删除；最后运行 ruff 和 pytest 并保证通过。
+\end{itemize}
+
+\subsubsection{执行过程与结果}
+
+\textbf{步骤1：创建三个 Python 文件。} 在 \texttt{q06} 下用 here-doc 写入 \texttt{math\_utils.py}、\texttt{app.py}、\texttt{test\_math\_utils.py}。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q06_create_files.png}
+\caption{第6题步骤1：创建三个 Python 文件}
+\end{figure}
+
+\textbf{步骤2：语言服务器跳转与重命名。} 在 PyCharm 中启用 Python 语言服务器，演示跳转到定义与查找引用；随后使用“重命名符号”把模块 \texttt{math\_utils} 重命名为 \texttt{calculate\_total}，\texttt{app.py} 与 \texttt{test\_math\_utils.py} 中的 import 引用全部同步更新。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q06_jump_to_def.png}
+\caption{第6题步骤2：语言服务器跳转到定义 / 查找引用}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q06_rename_symbol.png}
+\caption{第6题步骤3：重命名符号为 calculate\_total（引用同步更新）}
+\end{figure}
+
+\textbf{步骤4：ruff 静态检查。} 在 \texttt{app.py} 临时加入未使用的 \texttt{import os}，安装 ruff 后执行 \texttt{ruff check}，报告 \texttt{I001}（导入块未排序/未格式化）与 \texttt{F401}（\texttt{os} 已导入但未使用），按提示删除该 import。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q06_ruff_check.png}
+\caption{第6题步骤4：ruff 发现未使用 import os}
+\end{figure}
+
+\textbf{步骤5：运行 pytest。} 安装 pytest 依赖后执行 \texttt{pytest}，收集到 1 个测试用例，\texttt{test\_math\_utils.py} 通过（1 passed in 0.01s）。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q06_pytest.png}
+\caption{第6题步骤5：pytest 单元测试通过}
+\end{figure}
+
+\subsubsection{关键技术点}
+
+\begin{enumerate}
+    \item \textbf{Python 语言服务器}：IDE 通过语言服务器获得跳转、引用、重命名等语义能力，而不是靠字符串匹配。
+    \item \textbf{重命名符号}：一次重命名同时更新定义与所有引用，避免手改遗漏造成不一致。
+    \item \textbf{ruff}：静态检查工具，\texttt{F401} 检查“导入但未使用”，\texttt{I001} 检查导入块排序与格式，可自动修复。
+    \item \textbf{pytest}：以 \texttt{test\_} 前缀自动收集测试函数，断言不通过时给出失败信息，便于回归验证。
+\end{enumerate}
+
+% ============================================================
+\section{进度说明}
+% ============================================================
+
+本次实验共 4 题，目前已完成前 2 题（第5题、第6题）。第7题（用调试器定位归并排序缺陷）、第8题（先测量，再优化慢速词频程序）尚未完成，待完成后再补充到本报告中。
+
+\end{document}
