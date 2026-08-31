@@ -325,18 +325,41 @@ print(merge_sort([3, 1, 4, 1, 5, 9, 2, 6]))
 \caption{第7题步骤3：修复后运行输出正确排序结果}
 \end{figure}
 
+\textbf{步骤4：pytest 单元测试。} 新建 \texttt{test\_merge\_sort.py}，按题目要求增加两个测试：给定输入和含重复元素的列表。
+
+\begin{lstlisting}[language=Python]
+from merge_sort import merge_sort
+
+def test_merge_sort_given_input():
+    # 给定输入
+    assert merge_sort([3, 1, 4, 1, 5, 9, 2, 6]) == [1, 1, 2, 3, 4, 5, 6, 9]
+
+def test_merge_sort_with_duplicates():
+    # 含重复元素
+    assert merge_sort([5, 2, 8, 2, 9, 1, 5, 5]) == [1, 2, 2, 5, 5, 5, 8, 9]
+\end{lstlisting}
+
+执行 \texttt{pytest}，收集到 2 个测试用例，全部通过：
+
+\begin{verbatim}
+test_merge_sort.py::test_merge_sort_given_input PASSED    [ 50%]
+test_merge_sort.py::test_merge_sort_with_duplicates PASSED [100%]
+============================== 2 passed in 0.22s ===============================
+\end{verbatim}
+
 \subsubsection{关键技术点}
 
 \begin{enumerate}
     \item \textbf{断点调试}：在可疑分支设置断点、单步跟踪，比反复打印更能直观定位状态错误。
     \item \textbf{变量监视}：调试面板实时显示 \texttt{i}/\texttt{j}/\texttt{left}/\texttt{right}/\texttt{result}，能立刻发现下标错位。
     \item \textbf{最小修复}：只修改出错的一行，不重写算法，符合“最小改动”原则。
+    \item \textbf{pytest 回归}：以 \texttt{test\_} 前缀自动收集测试函数，两个用例覆盖给定输入与含重复元素场景，防止修复引入回归。
 \end{enumerate}
 
 % ============================================================
 \section{进度说明}
 % ============================================================
 
-本次实验共 4 题，目前已完成前 3 题（第5、6、7题）。第7题已完成缺陷调试与修复，pytest 单元测试（给定输入 + 含重复元素）待补充；第8题（先测量，再优化慢速词频程序）尚未完成，待完成后再补充到本报告中。
+本次实验共 4 题，目前已完成前 3 题（第5、6、7题），第7题的缺陷调试、修复与 pytest 单元测试均已补齐。第8题（先测量，再优化慢速词频程序）尚未完成，待完成后再补充到本报告中。
 
 \end{document}

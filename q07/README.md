@@ -46,9 +46,25 @@ else:
 含重复元素: [1, 2, 2, 5, 5, 5, 8, 9]
 ```
 
+## pytest 单元测试
+
+按题目要求新增 `test_merge_sort.py`，覆盖两个场景：
+
+```python
+from merge_sort import merge_sort
+
+def test_merge_sort_given_input():
+    assert merge_sort([3, 1, 4, 1, 5, 9, 2, 6]) == [1, 1, 2, 3, 4, 5, 6, 9]
+
+def test_merge_sort_with_duplicates():
+    assert merge_sort([5, 2, 8, 2, 9, 1, 5, 5]) == [1, 2, 2, 5, 5, 5, 8, 9]
+```
+
+运行结果：`2 passed in 0.22s`。
+
 ## 关键技术点
 
 - **断点调试**：在可疑分支设断点，单步跟踪变量变化，比打印定位更快
 - **变量监视**：调试面板实时显示 `i`/`j`/`left`/`right`/`result`，直观发现越界/错位
 - **最小修复**：只改错的那一行，不重写算法
-- pytest 单元测试（给定输入 + 含重复元素）待补充
+- **pytest 回归**：两个用例覆盖给定输入与含重复元素场景，防止修复引入回归

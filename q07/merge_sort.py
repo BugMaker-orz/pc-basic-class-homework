@@ -16,4 +16,6 @@ def merge_sort(a):
     m = len(a) // 2
     return merge(merge_sort(a[:m]), merge_sort(a[m:]))
 
-print(merge_sort([3,1,4,1,5,9,2,6]))
+
+if __name__ == "__main__":
+    print(merge_sort([3, 1, 4, 1, 5, 9, 2, 6]))
