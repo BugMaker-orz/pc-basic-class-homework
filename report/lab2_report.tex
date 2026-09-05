@@ -339,9 +339,81 @@ test_merge_sort.py::test_merge_sort_with_duplicates PASSED [100%]
 \end{enumerate}
 
 % ============================================================
+\subsection{第8题：先测量，再优化慢速词频程序}
+% ============================================================
+\subsubsection{题目要求}
+在 \texttt{q08} 中创建可重复生成的词表和故意低效的去重程序，再使用性能分析工具优化：
+\begin{enumerate}
+    \item 生成 \texttt{words.txt}，使用 \texttt{time} 运行原程序 2 次并记录耗时。
+    \item 使用 \texttt{cProfile -s cumulative} 运行一次，找出主要耗时位置。
+    \item 在不改变最终 count 的前提下优化程序；不得写死 1000。
+    \item 使用相同输入再运行 2 次，计算优化前后中位数和加速比。
+\end{enumerate}
+
+\subsubsection{执行过程与结果}
+\textbf{步骤1：创建文件并生成数据。} 在 \texttt{q08} 下创建 \texttt{generate\_words.py}（固定 seed 20260831，词表 1000，生成 30000 个词）和原始版 \texttt{wordfreq.py}（列表 + \texttt{in} 线性扫描去重，整体 O(n\textsuperscript{2})）。运行 \texttt{generate\_words.py} 生成 \texttt{words.txt}，再用 \texttt{time} 运行原始程序 2 次。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q08_create_and_before_time.png}
+\caption{第8题步骤1：创建文件、生成数据、优化前计时（0.091s / 0.092s，count=1000）}
+\end{figure}
+
+原始程序输出 \texttt{count= 1000}，两次耗时分别为 0.091s 和 0.092s。
+
+\textbf{步骤2：cProfile 定位瓶颈。} 运行 \texttt{python3 -m cProfile -s cumulative wordfreq.py}，按累计时间排序。输出显示主要耗时集中在模块级代码（\texttt{wordfreq.py:1(<module>)}，cumtime 0.082s），其中 \texttt{for} 循环内的 \texttt{if word not in unique} 列表线性扫描是瓶颈——30000 次迭代，每次平均扫描数百个已收集的唯一词。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q08_cprofile_and_rewrite.png}
+\caption{第8题步骤2：cProfile 分析输出，并重写为 set 优化版}
+\end{figure}
+
+\textbf{步骤3：优化为 set 去重。} 将列表替换为 \texttt{set}，哈希查找 O(1)，整体复杂度降为 O(n)：
+\begin{lstlisting}[language=Python]
+words = open("words.txt", encoding="utf-8").read().split()
+unique = set(words)
+print("count=", len(unique))
+\end{lstlisting}
+最终 count 由程序算出（与优化前完全一致，均为 1000），未写死。
+
+\textbf{步骤4：优化后计时与加速比。} 使用相同输入再运行 2 次，记录耗时并计算中位数和加速比。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{q08_optimized_time.png}
+\caption{第8题步骤4：优化后计时（0.022s / 0.016s），count=1000}
+\end{figure}
+
+性能对比：
+\begin{table}[H]
+\centering
+\caption{第8题优化前后性能对比}
+\begin{tabular}{lcc}
+\hline
+ & 优化前 & 优化后 \\
+\hline
+第1次 & 0.091s & 0.022s \\
+第2次 & 0.092s & 0.016s \\
+中位数 & 0.0915s & 0.0190s \\
+count & 1000 & 1000 \\
+加速比 & — & 4.82x \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{关键技术点}
+\begin{enumerate}
+    \item \textbf{先测量再优化}：用 \texttt{time} 量化基线，用 \texttt{cProfile -s cumulative} 按累计时间排序定位真正瓶颈，不凭直觉改代码。
+    \item \textbf{数据结构选择}：列表 \texttt{in} 是 O(n) 线性扫描，\texttt{set} 是 O(1) 哈希查找；去重场景 set 是正确选择，整体复杂度从 O(n\textsuperscript{2}) 降为 O(n)。
+    \item \textbf{可重复实验}：固定 \texttt{random.seed(20260831)}，保证优化前后输入完全一致，对比才有意义。
+    \item \textbf{正确性验证}：优化前后 count 必须一致（均为 1000），加速比才有意义；不得写死结果。
+\end{enumerate}
+
+% ============================================================
 \section{进度说明}
 % ============================================================
 
-本次实验共 4 题，目前已完成前 3 题（第5、6、7题），第7题的缺陷调试、修复与 pytest 单元测试均已补齐。第8题（先测量，再优化慢速词频程序）尚未完成，待完成后再补充到本报告中。
+本次实验共 4 题（第5、6、7、8题），已全部完成。第5题完成了后台任务的启动、挂起、后台运行与 SIGTERM 清理；第6题完成了语言服务器跳转、引用查找、重命名符号与 ruff/pytest 检查；第7题完成了归并排序缺陷的断点调试、最小修复与 pytest 单元测试；第8题完成了词频程序的 cProfile 性能分析、set 优化与加速比计算（4.82x）。全部题目均配有终端截图与代码文件。
 
 \end{document}
