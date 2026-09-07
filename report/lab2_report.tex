@@ -416,4 +416,53 @@ count & 1000 & 1000 \\
 
 本次实验共 4 题（第5、6、7、8题），已全部完成。第5题完成了后台任务的启动、挂起、后台运行与 SIGTERM 清理；第6题完成了语言服务器跳转、引用查找、重命名符号与 ruff/pytest 检查；第7题完成了归并排序缺陷的断点调试、最小修复与 pytest 单元测试；第8题完成了词频程序的 cProfile 性能分析、set 优化与加速比计算（4.82x）。全部题目均配有终端截图与代码文件。
 
+% ============================================================
+\section{Git 提交记录}
+% ============================================================
+
+按照课程要求，本次实验的所有代码和报告均通过 Git 进行版本管理，禁止单次全量提交。第二周（第5—8题）按功能模块分次提交，提交记录如下：
+
+\begin{table}[H]
+\centering
+\caption{Git 提交记录（第二周）}
+\label{tab:gitlog}
+\begin{tabular}{lll}
+\toprule
+提交哈希 & 提交信息 & 说明 \\
+\midrule
+8d3276b & docs(lab2): complete week2 report & 第8题加入报告，编译18页PDF \\
+b94ce19 & feat: q08 profiling & 第8题代码与截图 \\
+6185834 & docs: add course requirement PDFs & 上传课程要求文件 \\
+87b8dd6 & docs: simplify week2 report env table & 精简实验环境表 \\
+08dae1e & Add q07: pytest tests & 第7题pytest单元测试 \\
+0e6a7f2 & docs: update root README with q07 & 更新仓库首页README \\
+0a4d4f8 & Add report: week2 report update & 第7题加入报告 \\
+0326d33 & Add screenshots: q07 debugging evidence & 第7题调试截图 \\
+657bbe8 & Add q07: merge sort bug fix & 第7题代码与README \\
+9ee2f31 & docs: week2 report environment & 实验环境配置 \\
+f71563a & docs: update week2 report env table & 更新工具版本号 \\
+29cc23e & docs: update root README with week2 progress & 更新第二周进度 \\
+a19c626 & Add report: week2 lab report & 第5、6题报告初版 \\
+ed4a050 & Add screenshots: week2 lab evidence & 第5、6题终端截图 \\
+7e750f9 & Add q06: semantic refactor & 第6题代码 \\
+03199c9 & Add q05: controllable background task & 第5题代码 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{git_log_week2.png}
+\caption{Git 提交历史（第二周 16 次提交）}
+\label{fig:gitlog}
+\end{figure}
+
+\noindent\textbf{说明}：代码已推送到个人 GitHub 仓库：\url{https://github.com/BugMaker-orz/pc-basic-class-homework}，共完成 16 次分次提交，禁止单次全量提交。
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}
+\textit{报告结束}
+\end{center}
+
 \end{document}
