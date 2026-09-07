@@ -44,7 +44,7 @@
 \renewcommand{\headrulewidth}{0.4pt}
 
 % 图片路径
-\graphicspath{{./}}
+\graphicspath{{./shots/q09/}{./shots/q10/}{./shots/q11/}{./shots/q12/}}
 
 % 超链接设置
 \hypersetup{
@@ -299,7 +299,39 @@ bias: -1.0000
 \section{进度说明}
 % ============================================================
 
-第三次实验共 4 题（第9、10、11、12题），已全部完成。第9题完成了 greetlab 包的构建与干净环境安装验证；第10题完成了失败测试驱动的智能体修复循环，并记录了 3 行修复日志；第11题完成了 Issue、提交信息与评审意见的专业化改写；第12题完成了 PyTorch 线性回归训练，损失收敛到 0。全部题目均配有终端截图与代码文件，本轮实验文件暂未推送 GitHub，整理后将按课程要求推送。
+第三次实验共 4 题（第9、10、11、12题），已全部完成。第9题完成了 greetlab 包的构建与干净环境安装验证；第10题完成了失败测试驱动的智能体修复循环，并记录了 3 行修复日志；第11题完成了 Issue、提交信息与评审意见的专业化改写；第12题完成了 PyTorch 线性回归训练，损失收敛到 0。全部题目均配有终端截图与代码文件，代码与报告已按课程要求分次提交并推送到个人 GitHub 仓库。
+
+
+% ============================================================
+\section{Git 提交记录}
+% ============================================================
+
+按照课程要求，本次实验的所有代码和报告均通过 Git 进行版本管理，禁止单次全量提交。第三周（第9—12题）按功能模块分次提交，相关提交记录如下：
+
+\begin{table}[H]
+\centering
+\caption{Git 提交记录（第三周）}
+\label{tab:gitlog}
+\begin{tabular}{lll}
+\toprule
+提交哈希 & 提交信息 & 说明 \\
+\midrule
+15b8cda & docs(lab3): complete week3 report & 第9—12题报告（14页PDF） \\
+da5396a & feat: q11-q12 & 第11、12题代码与README \\
+c7042be & feat: q10 agent fix loop & 第10题代码与README \\
+4775490 & feat: q09 packaging & 第9题代码与README \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{git_log_week3.png}
+\caption{Git 提交历史（第三周相关提交）}
+\label{fig:gitlog}
+\end{figure}
+
+\noindent\textbf{说明}：代码与报告已推送到个人 GitHub 仓库：\url{https://github.com/BugMaker-orz/pc-basic-class-homework}，第3、4周合计完成 13 次分次提交，禁止单次全量提交。
 
 \vspace{1cm}
 \noindent\rule{\textwidth}{0.4pt}

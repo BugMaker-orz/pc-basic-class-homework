@@ -44,7 +44,7 @@
 \renewcommand{\headrulewidth}{0.4pt}
 
 % 图片路径
-\graphicspath{{./}}
+\graphicspath{{./shots/q13/}{./shots/q14/}{./shots/q15/}{./shots/q16/}}
 
 % 超链接设置
 \hypersetup{
@@ -319,7 +319,40 @@ XeTeX & TeX Live \\
 \section{进度说明}
 % ============================================================
 
-第四次实验共 4 题（第13、14、15、16题），已全部完成。第13题完成了 ruff + pytest 本地质量门禁；第14题完成了 Makefile 增量构建与 clean 验证；第15题完成了 HTTP 服务、curl/jq 数据处理与自动报告生成；第16题完成了陌生仓库的"破坏—失败—修复—构建—提交"综合检查。全部题目均配有终端截图与代码文件，本轮实验文件暂未推送 GitHub，整理后将按课程要求推送。
+第四次实验共 4 题（第13、14、15、16题），已全部完成。第13题完成了 ruff + pytest 本地质量门禁；第14题完成了 Makefile 增量构建与 clean 验证；第15题完成了 HTTP 服务、curl/jq 数据处理与自动报告生成；第16题完成了陌生仓库的"破坏—失败—修复—构建—提交"综合检查。全部题目均配有终端截图与代码文件，代码与报告已按课程要求分次提交并推送到个人 GitHub 仓库。
+
+
+% ============================================================
+\section{Git 提交记录}
+% ============================================================
+
+按照课程要求，本次实验的所有代码和报告均通过 Git 进行版本管理，禁止单次全量提交。第四周（第13—16题）按功能模块分次提交，相关提交记录如下：
+
+\begin{table}[H]
+\centering
+\caption{Git 提交记录（第四周）}
+\label{tab:gitlog}
+\begin{tabular}{lll}
+\toprule
+提交哈希 & 提交信息 & 说明 \\
+\midrule
+52c1d35 & docs(lab4): complete week4 report & 第13—16题报告（17页PDF） \\
+eecfc2b & feat: q16 break-fix-build-commit & 第16题代码与README \\
+98f5872 & feat: q15 api data to report & 第15题代码与README \\
+4398053 & feat: q14 makefile incremental build & 第14题代码与README \\
+01dd360 & feat: q13 quality gate & 第13题代码与README \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{git_log_week4.png}
+\caption{Git 提交历史（第四周相关提交）}
+\label{fig:gitlog}
+\end{figure}
+
+\noindent\textbf{说明}：代码与报告已推送到个人 GitHub 仓库：\url{https://github.com/BugMaker-orz/pc-basic-class-homework}，第3、4周合计完成 13 次分次提交，禁止单次全量提交。
 
 \vspace{1cm}
 \noindent\rule{\textwidth}{0.4pt}
