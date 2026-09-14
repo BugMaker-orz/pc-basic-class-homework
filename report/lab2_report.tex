@@ -418,6 +418,13 @@ count & 1000 & 1000 \\
 
 \subsection{命令行环境（5 题）}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{practice_2_1.png}
+\caption{课后练习：命令行环境（touch 的 \texttt{--}、进程替换 diff、作业控制、pidwait、别名与历史统计）}
+\label{fig:practice21}
+\end{figure}
+
 \begin{enumerate}
     \item \texttt{touch -- -myfile}：\texttt{--} 之后的参数不再被解析为 flag，文件名以 \texttt{-} 开头也能创建；删除时用 \texttt{rm -- -myfile}，否则 \texttt{rm} 会把文件名当参数选项。
     \item \texttt{diff <(printenv | sort) <(export | sort)}：进程替换 \texttt{<(...)} 把命令输出伪装成文件。两者格式不同：\texttt{printenv} 输出裸 \texttt{KEY=VALUE}，\texttt{export} 输出 \texttt{declare -x "KEY='VALUE'"}。
@@ -428,16 +435,37 @@ count & 1000 & 1000 \\
 
 \subsection{开发环境与工具（5 题）}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{practice_2_2.png}
+\caption{课后练习：开发环境与工具（ls 排序、marco/polo、flaky 重试、find+xargs 压缩、最近文件）}
+\label{fig:practice22}
+\end{figure}
+
 \begin{enumerate}
     \setcounter{enumi}{5}
     \item \texttt{ls -lhart --color=auto}：\texttt{-l} 长格式、\texttt{-h} 人类可读、\texttt{-a} 含隐藏、\texttt{-r} 反序、\texttt{-t} 按修改时间排序。
     \item \texttt{marco.sh}：marco 把当前目录存入变量，polo \texttt{cd} 回去；通过 \texttt{source marco.sh} 加载函数定义到当前 shell。
     \item 随机脚本重试：循环跑 \texttt{flaky.sh} 直到 exit 1，记录失败前运行次数。初版因 \texttt{\$?} 被后续命令覆盖导致死循环，修正为 \texttt{rc=\$?} 立即保存退出码。实测第 6 次运行失败。
     \item \texttt{find . -name '*.html' -print0 | xargs -0 zip out.zip}：\texttt{-print0} 用空字符分隔文件名，\texttt{xargs -0} 对应读取，含空格文件名也能正确压缩。
-    \item \texttt{ls -lt --time-style=+%H:%M} 按修改时间排序找最近文件。
+    \item \texttt{ls -lt --time-style=+\%H:\%M} 按修改时间排序找最近文件。
 \end{enumerate}
 
 \subsection{调试与分析（6 题）}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{practice_2_3.png}
+\caption{课后练习：调试与分析（journalctl 日志、pdb 断点、shellcheck 静态检查）}
+\label{fig:practice23}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{practice_2_4.png}
+\caption{课后练习：调试与分析（fib 缓存对比、lsof 端口定位、CPU 压测）}
+\label{fig:practice24}
+\end{figure}
 
 \begin{enumerate}
     \setcounter{enumi}{10}
