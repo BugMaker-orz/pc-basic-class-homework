@@ -411,6 +411,45 @@ count & 1000 & 1000 \\
 \end{enumerate}
 
 % ============================================================
+\section{课后练习}
+% ============================================================
+
+本次课后练习来自 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/command-line-environment/}{Missing Semester 2026 第2讲：命令行环境}、\href{https://mlbo.github.io/missing-semester-cn-2026/2026/development-environment/}{第3讲：开发环境与工具} 和 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/debugging-profiling/}{第4讲：调试与分析}，共完成 16 道题。
+
+\subsection{命令行环境（5 题）}
+
+\begin{enumerate}
+    \item \texttt{touch -- -myfile}：\texttt{--} 之后的参数不再被解析为 flag，文件名以 \texttt{-} 开头也能创建；删除时用 \texttt{rm -- -myfile}，否则 \texttt{rm} 会把文件名当参数选项。
+    \item \texttt{diff <(printenv | sort) <(export | sort)}：进程替换 \texttt{<(...)} 把命令输出伪装成文件。两者格式不同：\texttt{printenv} 输出裸 \texttt{KEY=VALUE}，\texttt{export} 输出 \texttt{declare -x "KEY='VALUE'"}。
+    \item 作业控制：\texttt{sleep 10000 \&} 后台启动，\texttt{pgrep -af "sleep 10000"} 找 PID，\texttt{pkill -f} 终止。踩坑：\texttt{pkill -f} 会匹配完整命令行字符串，若自己的 shell 命令里也含该字符串会被误杀。
+    \item \texttt{pidwait} 函数：\texttt{while kill -0 "\$1" 2>/dev/null; do sleep 0.1; done}，\texttt{kill -0} 不发信号只检查进程是否存在，轮询等待指定 PID 退出。
+    \item 别名与历史：\texttt{alias dc=cd} 修正输错；\texttt{history | awk '\{\$1="";print substr(\$0,2)\}' | sort | uniq -c | sort -rn | head} 统计最常用命令。
+\end{enumerate}
+
+\subsection{开发环境与工具（5 题）}
+
+\begin{enumerate}
+    \setcounter{enumi}{5}
+    \item \texttt{ls -lhart --color=auto}：\texttt{-l} 长格式、\texttt{-h} 人类可读、\texttt{-a} 含隐藏、\texttt{-r} 反序、\texttt{-t} 按修改时间排序。
+    \item \texttt{marco.sh}：marco 把当前目录存入变量，polo \texttt{cd} 回去；通过 \texttt{source marco.sh} 加载函数定义到当前 shell。
+    \item 随机脚本重试：循环跑 \texttt{flaky.sh} 直到 exit 1，记录失败前运行次数。初版因 \texttt{\$?} 被后续命令覆盖导致死循环，修正为 \texttt{rc=\$?} 立即保存退出码。实测第 6 次运行失败。
+    \item \texttt{find . -name '*.html' -print0 | xargs -0 zip out.zip}：\texttt{-print0} 用空字符分隔文件名，\texttt{xargs -0} 对应读取，含空格文件名也能正确压缩。
+    \item \texttt{ls -lt --time-style=+%H:%M} 按修改时间排序找最近文件。
+\end{enumerate}
+
+\subsection{调试与分析（6 题）}
+
+\begin{enumerate}
+    \setcounter{enumi}{10}
+    \item \texttt{journalctl} 查看系统登录日志；\texttt{journalctl -u ssh} 看指定服务。
+    \item \texttt{pdb} 断点调试：\texttt{import pdb; pdb.set\_trace()}，常用命令 \texttt{n}（下一步）、\texttt{s}（步入）、\texttt{c}（继续）、\texttt{l}（看代码）。
+    \item \texttt{shellcheck} 检查 m3u 脚本，报 5 个问题：SC2045（遍历 ls 输出脆弱）、SC2086（变量未引号导致分词）、SC2062（grep 模式未引号）、SC3037（POSIX sh 不支持 \texttt{echo -e}）、SC2016（单引号内变量不展开）。修复后 \texttt{shellcheck} 零警告。
+    \item \texttt{fib.py} 递归版 \texttt{fib9()=34}，加入 \texttt{functools.lru\_cache(1)} 后结果一致但函数调用次数从指数级降到 O(n)。
+    \item \texttt{lsof -i :4444} 找出占用 4444 端口的进程 PID，再 \texttt{kill <PID>} 终止。
+    \item \texttt{stress -c 3} 压测三个 CPU 核，\texttt{htop} 可视化占用；\texttt{taskset --cpu-list 0,2 stress -c 3} 把进程绑定到 0、2 两个核。
+\end{enumerate}
+
+% ============================================================
 \section{进度说明}
 % ============================================================
 

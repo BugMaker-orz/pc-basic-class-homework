@@ -296,6 +296,38 @@ bias: -1.0000
 \end{enumerate}
 
 % ============================================================
+\section{课后练习}
+% ============================================================
+
+本次课后练习来自 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/shipping-code/}{Missing Semester 2026 第6讲：打包与发布代码}、\href{https://mlbo.github.io/missing-semester-cn-2026/2026/agentic-coding/}{第7讲：代理编码} 和 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/beyond-code/}{第8讲：代码之外}，共完成 9 道题。
+
+\subsection{打包与发布代码（2 题）}
+
+\begin{enumerate}
+    \item \textbf{venv 环境隔离原理}：激活前 \texttt{printenv | sort > before.txt}，\texttt{python -m venv .venv \&\& source .venv/bin/activate} 后再 \texttt{printenv | sort > after.txt}，diff 发现激活后 \texttt{PATH} 前面多了 \texttt{.venv/bin}——这就是 shell 优先用 venv 里 python 的原因，不需要修改系统 Python。
+    \item \textbf{pyproject.toml 构建 wheel}：写 \texttt{[project]}（name/version/description）+ \texttt{[build-system]}（setuptools>=61），放一个 \texttt{demo\_greet/\_\_init\_\_.py}，\texttt{python -m build} 同时产出 \texttt{.whl}（二进制分发）和 \texttt{.tar.gz}（源码分发）。
+\end{enumerate}
+
+\subsection{代理编码（4 题）}
+
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item \textbf{四种方式对比同一任务}：手写、AI 补全、内联聊天、编码代理各做一遍同一个小功能。结论：补全最快但只适合局部改，代理适合多文件重构但需要审查，手写小函数反而最省心。
+    \item \textbf{用代理导航陌生代码库}：让 AI 解释 opencode 项目里安全相关模块的工作流程，它能快速定位入口并画出调用链，但细节需要人工验证。
+    \item \textbf{AGENTS.md}：在项目根目录写 \texttt{AGENTS.md}，约定"改完代码必须跑 \texttt{ruff check . \&\& pytest}"，代理启动时自动读入上下文。
+    \item \textbf{Vibe code 小应用}：不手写一行代码，用自然语言让代理生成一个命令行待办工具，能跑但需要人工检查错误处理和边界。
+\end{enumerate}
+
+\subsection{代码之外（3 题）}
+
+\begin{enumerate}
+    \setcounter{enumi}{6}
+    \item \textbf{读开源项目源码找注释范例}：在 Redis/curl 源码中找 TODO（标记未完成项和原因）、外部引用（链接到 RFC 或论文）、"为什么不"注释（解释为何故意不用显而易见的方案）。
+    \item \textbf{分析提交消息}：\texttt{git log} 找一条好提交（解释 why）和一条弱提交（只说 what），对弱提交用"问题→解决方案→影响"结构重写。事后拼接上下文很费劲，说明当时写清楚很重要。
+    \item \textbf{比较 README}：选三个 1000+ star 项目的 README，按"做什么/为什么关心/怎么用/怎么装"四要素对比，发现好的 README 顶部就一句话说清用途，差的 README 上来就是大段安装命令。
+\end{enumerate}
+
+% ============================================================
 \section{进度说明}
 % ============================================================
 

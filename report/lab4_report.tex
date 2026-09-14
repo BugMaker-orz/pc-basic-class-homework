@@ -316,6 +316,20 @@ XeTeX & TeX Live \\
 \end{enumerate}
 
 % ============================================================
+\section{课后练习}
+% ============================================================
+
+本次课后练习来自 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/code-quality/}{Missing Semester 2026 第9讲：代码质量}，共完成 5 道题，涵盖 Makefile、版本约束、Git hooks、CI 等主题。
+
+\begin{enumerate}
+    \item \textbf{Makefile clean 目标}：在原有 \texttt{paper.pdf} 规则基础上加 \texttt{clean} 目标用 \texttt{rm -f paper.pdf} 删除产物，并在文件开头声明 \texttt{.PHONY: all clean}，防止当前目录下恰好有名为 \texttt{clean} 的文件时 make 跳过执行。
+    \item \textbf{版本约束语法}：\texttt{\^{}} 表示兼容次版本（如 \texttt{\^{}1.2.3} 允许 1.9.0 但不允许 2.0.0）；\texttt{\textasciitilde} 表示只兼容补丁号（\texttt{\textasciitilde1.2.3} 允许 1.2.9 但不允许 1.3.0）；还有通配符 \texttt{*} 和比较符 \texttt{>=,<}。
+    \item \textbf{pre-commit hook}：在 \texttt{.git/hooks/pre-commit} 写脚本，提交前自动跑 \texttt{make paper.pdf}，构建失败就 \texttt{exit 1} 拒绝提交。实测修改 \texttt{Makefile} 后 hook 正确拦截了不完整提交。
+    \item \textbf{GitHub Pages + Action}：把静态页面推到 GitHub 仓库后启用 Pages 自动部署，同时配一个 Action 在每次 push 时对 \texttt{.sh} 文件跑 \texttt{shellcheck}，有警告就标红。
+    \item \textbf{Markdown lint Action}：对 \texttt{.md} 文件跑 \texttt{proselint} 或 \texttt{write-good}，提交一篇有拼写错误的 md 文件验证 Action 能拦截。
+\end{enumerate}
+
+% ============================================================
 \section{进度说明}
 % ============================================================
 

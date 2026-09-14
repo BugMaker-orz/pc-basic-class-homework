@@ -383,7 +383,7 @@ mode=fast       # 被合并分支（feature-b）的内容
 \section{课后练习}
 % ============================================================
 
-本次课后练习来自课程参考资料 \href{https://missing-semester-cn.github.io/2020/course-shell/}{MIT Missing Semester 第1讲：课程概览与 Shell} 的课后习题，共完成 9 道题，涵盖目录操作、man 手册、文件创建、脚本编写、权限管理、管道重定向和 sysfs 系统信息等主题。
+本次课后练习来自课程参考资料 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/course-shell/}{MIT Missing Semester 2026 第1讲：课程概览与 Shell} 和 \href{https://mlbo.github.io/missing-semester-cn-2026/2026/version-control/}{第5讲：版本控制与 Git} 的课后习题，共完成 17 道题（Shell 9 道 + Git 8 道），涵盖目录操作、man 手册、文件创建、脚本编写、权限管理、管道重定向、sysfs 系统信息、Git 历史检索、stash 与别名等主题。
 
 \subsection{练习 1--3：目录操作与 man 手册}
 
@@ -430,6 +430,20 @@ mode=fast       # 被合并分支（feature-b）的内容
     \item \textbf{chmod 添加执行权限并执行}：\texttt{chmod +x semester} 后权限变为 \texttt{-rwxr-xr-x}，执行成功，返回 missing.csail.mit.edu 的 HTTP 响应头。Shell 通过 shebang（\texttt{\#!/bin/sh}）知晓该文件需用 sh 解析。
     \item \textbf{管道与重定向提取 Last-Modified}：\texttt{./semester | grep -i "last-modified" > \textasciitilde/last-modified.txt}，将 curl 输出通过管道传给 grep 筛选，再重定向写入主目录文件。
     \item \textbf{从 /sys 获取系统信息}：容器环境无 backlight 和 thermal\_zone，改用 \texttt{/sys/class/} 查看可用子系统，通过 \texttt{/proc/meminfo} 获取内存信息（MemTotal: 4130368 kB）。
+\end{enumerate}
+
+\subsection{Git 练习：克隆仓库与历史检索（10--17）}
+
+\begin{enumerate}
+    \setcounter{enumi}{9}
+    \item \textbf{克隆课程仓库}：\texttt{git clone https://github.com/missing-semester/missing-semester.git}，用 \texttt{--depth 50} 做浅克隆，减少下载量。
+    \item \textbf{可视化版本历史}：\texttt{git log --all --graph --decorate --oneline} 一次性展示所有分支的合并结构。
+    \item \textbf{谁最后修改了 README.md}：\texttt{git log -1 --format="\%h \%an \%s" -- README.md}，结果为 commit 49f676c，作者 Anish Athalye。
+    \item \textbf{查找引入某行的提交}：\texttt{git log -S "collections:" -- \_config.yml} 用 pickaxe 搜索字符串出现/消失的提交，定位到 e9ba75d。
+    \item \textbf{配置 git graph 别名}：在 \texttt{\textasciitilde/.gitconfig} 中加入 \texttt{[alias] graph = log --all --graph --decorate --oneline}，之后 \texttt{git graph} 一条命令即可看历史图。
+    \item \textbf{git stash 演示}：修改 README 后 \texttt{git stash}，工作区恢复干净；\texttt{git stash pop} 把改动恢复回来。stash 适合"切分支前临时藏一下未完成工作"的场景。
+    \item \textbf{全局 .gitignore}：在 \texttt{\textasciitilde/.gitconfig} 配置 \texttt{core.excludesfile} 指向全局忽略文件，把 \texttt{.DS\_Store}、\texttt{.venv/} 等通用临时文件全局忽略。
+    \item \texttt{git clone --depth 1} 浅克隆：只拉最新一次提交，适合只看代码不需要历史的场景。
 \end{enumerate}
 
 % ============================================================
