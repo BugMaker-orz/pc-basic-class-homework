@@ -48,7 +48,16 @@
 
 ---
 
-## 第2周：命令行环境 + 开发工具 + Debugging（11 个实例）
+## 第2周：命令行环境 + 开发工具 + Debugging（16 个实例）
+
+### 命令行环境（5 个，见 week2-clenv/）
+讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/command-line-environment/
+
+1. `touch -- -myfile`：`--` 之后的参数不被解析为 flag，文件名以 `-` 开头也能创建；删除用 `rm -- -myfile`
+2. `diff <(printenv | sort) <(export | sort)`：printenv 输出裸 `KEY=VALUE`，export 输出 `declare -x KEY="VALUE"`，格式不同
+3. 作业控制：`sleep 10000 &` 后台启动 → `pgrep -af` 找 PID → `pkill -f` 终止（注意 `-f` 会匹配命令行字符串，小心误杀）
+4. `pidwait` 函数：`while kill -0 "$1" 2>/dev/null; do sleep 0.1; done` 等待指定 PID 退出
+5. 别名：`alias dc=cd`；`history | awk '{$1="";print substr($0,2)}' | sort | uniq -c | sort -n | tail` 统计最常用命令
 
 ### 开发环境与工具（5 个，见 week2-shelltools/）
 讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/development-environment/
@@ -71,18 +80,28 @@
 
 ---
 
-## 第3周：打包发布 + 智能体 + 代码之外
+## 第3周：打包发布 + 智能体 + 代码之外（8 个实例）
 
-对应讲次：
-- 打包与发布代码：https://mlbo.github.io/missing-semester-cn-2026/2026/shipping-code/
-- 代理编码：https://mlbo.github.io/missing-semester-cn-2026/2026/agentic-coding/
-- 代码之外：https://mlbo.github.io/missing-semester-cn-2026/2026/beyond-code/
+### 打包与发布代码（2 个，见 week3-pkg/）
+讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/shipping-code/
 
-课后练习即课上检查题 q09~q12：
-- q09 从源码 build wheel 并在干净 venv 安装
-- q10 AI 智能体修复循环（空白名 exit 2）
-- q11 协作材料改写（Issue/提交信息/评审意见）
-- q12 PyTorch 线性回归（zero_grad/backward/step，loss<0.001）
+1. `printenv | sort > before.txt` → `python -m venv .venv && source .venv/bin/activate` → `printenv | sort > after.txt` → diff：激活后 PATH 前面多了 `.venv/bin`，这就是 shell 优先用 venv 里的 python 的原因
+2. 写 `pyproject.toml`（`[project]` name/version + `[build-system]` setuptools）→ 放 `demo_greet/__init__.py` → `python -m build` 产出 `.whl` 和 `.tar.gz`
+
+### 代理编码（3 个，主观任务）
+讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/agentic-coding/
+
+1. 同一任务分别手写/AI 补全/内联聊天/代理四次完成，对比体验
+2. 用 AI 代理导航陌生代码库（如 opencode 的安全相关模块）
+3. Vibe code 一个小应用，不手写一行代码
+4. 为代理写 `AGENTS.md`：约定提交前跑 `ruff check . && pytest`，说明测试运行方式
+
+### 代码之外（3 个，主观任务）
+讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/beyond-code/
+
+1. 浏览 Redis/curl 源码，找 TODO、外部引用、"为什么不"注释的实例
+2. `git log` 找一条好提交消息（解释 why）和一条弱消息（只描述 what），用问题→解决方案→影响结构重写弱消息
+3. 比较三个 1000+ star 项目的 README，总结"做什么/为什么关心/怎么用/怎么装"四要素写法
 
 ---
 
