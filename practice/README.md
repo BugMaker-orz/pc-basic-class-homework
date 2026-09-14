@@ -43,8 +43,8 @@
 4. `git log -S "collections:" -- _config.yml`：commit e9ba75d
 5. `~/.gitconfig` 配置 `[alias] graph = log --all --graph --decorate --oneline`
 6. `git stash`：改 README → stash（工作区干净）→ stash pop（改动恢复）
-7. 全局 `.gitignore_global` 忽略 `.DS_Store` 等临时文件
-8. `git clone --depth 1` 浅克隆
+7. 全局 `.gitignore_global` 忽略 `.DS_Store`、`.venv/`、`__pycache__/`，通过 `git config --global core.excludesfile ~/.gitignore_global` 全局生效
+8. `git clone --depth 1` 浅克隆：只拉最新一次提交
 
 ---
 
@@ -58,6 +58,7 @@
 3. 作业控制：`sleep 10000 &` 后台启动 → `pgrep -af` 找 PID → `pkill -f` 终止（注意 `-f` 会匹配命令行字符串，小心误杀）
 4. `pidwait` 函数：`while kill -0 "$1" 2>/dev/null; do sleep 0.1; done` 等待指定 PID 退出
 5. 别名：`alias dc=cd`；`history | awk '{$1="";print substr($0,2)}' | sort | uniq -c | sort -n | tail` 统计最常用命令
+6. `tmux` 基础：`tmux new-session -d -s demo` 后台建会话，`tmux split-window -h` 水平分屏，`tmux capture-pane -p` 抓取屏幕内容，`tmux kill-session` 销毁
 
 ### 开发环境与工具（5 个，见 week2-shelltools/）
 讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/development-environment/
@@ -71,12 +72,13 @@
 ### 调试与分析（6 个，见 week2-debug/）
 讲次：https://mlbo.github.io/missing-semester-cn-2026/2026/debugging-profiling/
 
-1. `journalctl` 查看登录日志
+1. `journalctl` 查看登录日志（容器无 systemd 时改看 `/var/log/`）
 2. `pdb` 断点调试（q07 已实际使用）
 3. `shellcheck` 检查 m3u 脚本：报 5 个问题（SC2045 遍历 ls、SC2086 变量未引号、SC2062 grep 模式未引号、SC3037 echo -e、SC2016 单引号不展开），修复后清零
 4. `fib.py` 递归版结果 34；加 `lru_cache(1)` 后结果一致但调用次数指数下降
 5. `lsof -i :4444` 找占用端口的进程 PID
 6. `stress -c 3` + `htop` 可视化 CPU 占用
+7. `cProfile` 对比插入排序 vs 快排：5000 个元素插入排序 0.391s，快排 0.006s（快 65 倍）
 
 ---
 
